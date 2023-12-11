@@ -28,7 +28,7 @@ class MICCAIBraTS2019(Dataset):
         """
         self.mode = mode
         self.root = str(dataset_path)
-        self.training_path = self.root + '/brats2019/MICCAI_BraTS_2019_Data_Training/'
+        self.training_path = self.root + '/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001'
         self.testing_path = self.root + '/brats2019/MICCAI_BraTS_2019_Data_Validation/'
         self.full_vol_dim = (240, 240, 155)  # slice, width, height
         self.crop_size = crop_dim
@@ -47,8 +47,13 @@ class MICCAIBraTS2019(Dataset):
 
         if load:
             ## load pre-generated data
-            self.list = utils.load_list(self.save_name)
-            list_IDsT1 = sorted(glob.glob(os.path.join(self.training_path, '*GG/*/*t1.nii.gz')))
+            # self.list = utils.load_list(self.save_name)
+            self.list = ['/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_t1.nii']
+            # list_IDsT1 = sorted(glob.glob(os.path.join(self.training_path, '*t1.nii')))
+            list_IDsT1 = ['/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_t1.nii']
+            print(self.training_path)
+            print(os.path.join(self.training_path, '*t1.nii'))
+            print(list_IDsT1)
             self.affine = img_loader.load_affine_matrix(list_IDsT1[0])
             return
 
@@ -56,11 +61,11 @@ class MICCAIBraTS2019(Dataset):
         self.sub_vol_path = self.root + '/brats2019/MICCAI_BraTS_2019_Data_Training/generated/' + mode + subvol + '/'
         utils.make_dirs(self.sub_vol_path)
 
-        list_IDsT1 = sorted(glob.glob(os.path.join(self.training_path, '*GG/*/*t1.nii.gz')))
-        list_IDsT1ce = sorted(glob.glob(os.path.join(self.training_path, '*GG/*/*t1ce.nii.gz')))
-        list_IDsT2 = sorted(glob.glob(os.path.join(self.training_path, '*GG/*/*t2.nii.gz')))
-        list_IDsFlair = sorted(glob.glob(os.path.join(self.training_path, '*GG/*/*_flair.nii.gz')))
-        labels = sorted(glob.glob(os.path.join(self.training_path, '*GG/*/*_seg.nii.gz')))
+        list_IDsT1 = sorted(glob.glob(os.path.join(self.training_path, '*t1.nii')))
+        list_IDsT1ce = sorted(glob.glob(os.path.join(self.training_path, '*t1ce.nii')))
+        list_IDsT2 = sorted(glob.glob(os.path.join(self.training_path, '*t2.nii')))
+        list_IDsFlair = sorted(glob.glob(os.path.join(self.training_path, '*_flair.nii')))
+        labels = sorted(glob.glob(os.path.join(self.training_path, '*_seg.nii')))
         list_IDsT1, list_IDsT1ce, list_IDsT2, list_IDsFlair, labels = utils.shuffle_lists(list_IDsT1, list_IDsT1ce,
                                                                                           list_IDsT2,
                                                                                           list_IDsFlair, labels,
