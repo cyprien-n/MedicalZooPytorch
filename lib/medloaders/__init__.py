@@ -89,7 +89,7 @@ def generate_datasets(args, path='.././datasets'):
         split_idx = int(split[0] * total_data)
         train_loader = MICCAIBraTS2019(args, 'train', dataset_path=path, classes=args.classes, crop_dim=args.dim,
                                        split_idx=split_idx, samples=samples_train, load=args.loadData)
-
+        print(train_loader)
         val_loader = MICCAIBraTS2019(args, 'val', dataset_path=path, classes=args.classes, crop_dim=args.dim,
                                      split_idx=split_idx,
                                      samples=samples_val, load=args.loadData)
@@ -123,6 +123,8 @@ def generate_datasets(args, path='.././datasets'):
 
         val_loader = COVID_Seg_Dataset(mode='val', dataset_path=path, crop_dim=args.dim,
                                        fold=0, samples=samples_val)
+    print(f"Number of train samples: {len(train_loader)}")
+
     training_generator = DataLoader(train_loader, **params)
     val_generator = DataLoader(val_loader, **params)
 
