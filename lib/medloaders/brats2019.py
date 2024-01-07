@@ -10,6 +10,8 @@ import lib.utils as utils
 from lib.medloaders import medical_image_process as img_loader
 from lib.medloaders.medical_loader_utils import create_sub_volumes
 
+import nibabel as nib
+
 
 class MICCAIBraTS2019(Dataset):
     """
@@ -48,7 +50,13 @@ class MICCAIBraTS2019(Dataset):
         if load:
             ## load pre-generated data
             # self.list = utils.load_list(self.save_name)
-            self.list = ['/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_t1.nii']
+            #f_t1, f_t1ce, f_t2, f_flair, f_seg
+            self.list = [
+              '/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_t1.nii',
+              '/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_t1ce.nii',
+              '/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_t2.nii',
+              '/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_flair.nii', 
+              '/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_seg.nii']
             # list_IDsT1 = sorted(glob.glob(os.path.join(self.training_path, '*t1.nii')))
             list_IDsT1 = ['/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_t1.nii']
             print(self.training_path)
@@ -108,9 +116,18 @@ class MICCAIBraTS2019(Dataset):
         return len(self.list)
 
     def __getitem__(self, index):
-        f_t1, f_t1ce, f_t2, f_flair, f_seg = self.list[index]
-        img_t1, img_t1ce, img_t2, img_flair, img_seg = np.load(f_t1), np.load(f_t1ce), np.load(f_t2), np.load(
-            f_flair), np.load(f_seg)
+        print('\n', index, '\n', self.list[index], '\n')
+        # f_t1, f_t1ce, f_t2, f_flair, f_seg = self.list[index]
+        f_t1 = '/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_t1.nii'
+        f_t1ce = '/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_t1ce.nii'
+        f_t2 = '/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_t2.nii'
+        f_flair = '/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_flair.nii'
+        f_seg = '/content/MedicalZooPytorch/datasets/MICCAI_2019_pathology_challenge/BraTS19/BraTS19_001/BraTS19_001_seg.nii'
+        # img_t1, img_t1ce, img_t2, img_flair, img_seg = np.load(f_t1), np.load(f_t1ce), np.load(f_t2), np.load(
+        #     f_flair), np.load(f_seg)
+        img_t1, img_t1ce, img_t2, img_flair, img_seg = nib.load(f_t1), nib.load(f_t1ce), nib.load(f_t2), nib.load(
+              f_flair), nib.load(f_seg)
+        img_t1, img_t1ce, img_t2, img_flair, img_seg = img_t1.get_data(), img_t1ce.get_data(), img_t2.get_data(), img_flair.get_data(), img_seg.get_data()
         if self.mode == 'train' and self.augmentation:
             [img_t1, img_t1ce, img_t2, img_flair], img_seg = self.transform([img_t1, img_t1ce, img_t2, img_flair],
                                                                             img_seg)
