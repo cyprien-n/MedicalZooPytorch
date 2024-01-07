@@ -32,8 +32,11 @@ def main():
     # trainer = Trainer(args, model, criterion, optimizer, train_data_loader=training_generator,
     #                   valid_data_loader=val_generator, lr_scheduler=None)
 
-    trainer = train.Trainer(args, model, criterion, optimizer, train_data_loader=training_generator,
-                            valid_data_loader=val_generator)
+    # trainer = train.Trainer(args, model, criterion, optimizer, train_data_loader=training_generator,
+    #                         valid_data_loader=val_generator)
+
+    trainer = Trainer(args, model, criterion, optimizer, train_data_loader=training_generator,
+                        valid_data_loader=val_generator)
     print("START TRAINING...")
     trainer.training()
 
