@@ -101,9 +101,17 @@ class UpTransition(nn.Module):
     def forward(self, x, skipx):
         out = self.do1(x)
         skipxdo = self.do2(skipx)
+        print("Size of out before up_conv:", out.size())
         out = self.relu1(self.bn1(self.up_conv(out)))
+        print("Size of out after up_conv:", out.size())
+        # Adjust the size of skipxdo to match the size of out
+        skipxdo = skipxdo[:, :, :out.size(2), :out.size(3), :out.size(4)]
+        print("Size of skipxdo:", skipxdo.size())
+  
         xcat = torch.cat((out, skipxdo), 1)
+        print("Size of xcat:", xcat.size())
         out = self.ops(xcat)
+        print("Size of out after ops:", out.size())
         out = self.relu2(torch.add(out, xcat))
         return out
 
